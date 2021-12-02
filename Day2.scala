@@ -24,9 +24,6 @@ object Day2 {
     println(s"The solution number one is: ${sum_depth * sum_forward}")
 
 // Part 2: the order matters
-    // forward - go ahead AND go deeper by ahead*aim
-    // up - reduce aim
-    // down - increase aim
 
     // function to get depth
 
