@@ -3,15 +3,9 @@ import jdk.internal.util.xml.impl.Input
 object Day3 {
 
   def main(args: Array[String]): Unit = {
-    val power_consumption = get_power_consumption("input_big.txt")
+    println(get_power_consumption("input_big.txt"))
+    println(get_life_support_rating("input_big.txt"))
 
-    val oxygen = get_oxygen_generator_rating("input_big.txt")
-    println(oxygen)
-
-    val co2 = get_co2_rating("input_big.txt")
-    println(co2)
-
-    println(oxygen*co2)
 
   }
 
@@ -37,14 +31,70 @@ object Day3 {
     Integer.parseInt(gamma_binary.mkString(""), 2) * Integer.parseInt(epsilon_binary.mkString(""), 2)
   }
 
-/// other metrics
-  // need to get the first numbers of each list, got the most common, discard those with no most common number
+  /// PART 2 Recursive ///
+
+  def most_common_or_one(input: List[List[String]], column: Int): String = {
+    val input_trans = input.transpose
+    val frequence_map = input_trans(column).groupBy(identity).map{ case (k,v) => (k,v.size) }
+
+    val zeros = frequence_map.getOrElse("0",0)
+    val ones = frequence_map.getOrElse("1",0)
+
+    if (zeros > ones) return "0" else return "1"
+  }
+
+  def least_common_or_zero(input: List[List[String]], column: Int): String = {
+    val max_num_digits = input.length
+    val input_trans = input.transpose
+    val frequence_map = input_trans(column).groupBy(identity).map{ case (k,v) => (k,v.size) }
+
+    val zeros = frequence_map.getOrElse("0", max_num_digits)
+    val ones = frequence_map.getOrElse("1", max_num_digits)
+
+    if (ones < zeros) return "1" else return "0"
+  }
+
+  def filter_by_most_common_digit(input: List[List[String]], most_common: String, column: Int): List[List[String]] = {
+  val filt_vals = input.filter(x => x(column) == most_common)
+  filt_vals
+}
+
+  def get_oxygen_rating_recursion(input: List[List[String]], column: Int = 0): Int = {
+    if (input.length == 1) {
+      return Integer.parseInt(input(0).mkString(""), 2)
+    } else {
+      val most_common = most_common_or_one(input, column)
+      val filt_list = filter_by_most_common_digit(input, most_common, column)
+      get_oxygen_rating_recursion(filt_list, column+1)
+    }
+  }
+
+  def get_c02_rating_recursion(input: List[List[String]], column: Int = 0): Int = {
+    if (input.length == 1) {
+      return Integer.parseInt(input(0).mkString(""), 2)
+    } else {
+      val most_common = least_common_or_zero(input, column)
+      val filt_list = filter_by_most_common_digit(input, most_common, column)
+      get_c02_rating_recursion(filt_list, column+1)
+    }
+  }
+
+  def get_life_support_rating(inputPath: String): Int = {
+    val input = loadData(inputPath)
+
+    val oxygen_rating = get_oxygen_rating_recursion(input)
+    val co2_rating = get_c02_rating_recursion(input)
+
+    oxygen_rating * co2_rating
+
+  }
+
+  /// THE BELLOW IS A VERY SHITTY SOLUTION AND YOU BETTER AVOID LOOKING AT IT!!!!
 
   def get_oxygen_generator_rating(filePath: String): Int = {
     var input = loadData(filePath)
     var input_trans = input.transpose
 
-    println(input.filter(x => x(i) == "1"))
     // try to get an implicit iterator with the collect stuff
     for (i <- 0 to (input(0).length-1)) {
       val frequence_map = input_trans(i).groupBy(identity)
