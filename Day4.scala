@@ -23,7 +23,7 @@ object Day4 {
       e => e ::: e.transpose
     }
 
-    val map_bingo_matrices=(0 to (BingoWithTranspose.length-1)).map(x => x -> BingoWithTranspose(x)).toMap.map{
+    val map_bingo_matrices=BingoWithTranspose.indices.map(x => x -> BingoWithTranspose(x)).toMap.map{
       case (k,v) => (k, v.map{
         e => e.toSet
       })
