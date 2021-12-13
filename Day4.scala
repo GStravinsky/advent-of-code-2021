@@ -1,9 +1,10 @@
+import scala.collection.mutable.LinkedHashMap
 
 object Day4 {
 
   def main(args: Array[String]): Unit = {
     val (draw, tables) = loadData("input_big.txt")
-    println(get_winner_board(draw, tables))
+    println(GetLoserBoard(draw, tables))
   }
 
   def loadData(filePath: String): (List[String], Map[Int, List[Set[String]]]) = {
@@ -57,5 +58,39 @@ object Day4 {
     get_winner_board(draws, BingoTables, last_number_index+1, MatchingAxes)
   }
 
+
+  def GetLoserBoard(
+                        draws: List[String], BingoTables: Map[Int, List[Set[String]]],
+                        winnerQ: Map[Int, Set[Int]] = Map(), last_number_index: Int = 5
+                      ): Any = {
+
+    if (winnerQ.values.foldLeft(Set.empty[Int])(_|_).size == BingoTables.size) {
+      // get table with the biggest number of draws
+      val losingTable = winnerQ(last_number_index-1).head
+
+      val SumOfUnmarked = (BingoTables(losingTable).flatten.toSet -- draws.slice(0, last_number_index-1).toSet).map{
+        e => e.toInt
+      }.foldLeft(0)(_+_)
+
+      return (SumOfUnmarked * draws(last_number_index-2).toInt)
+    }
+    // min slice is from 5
+    val current_draw = draws.slice(0, last_number_index).toSet
+    val MatchingAxes = BingoTables.map{
+      case (k,v) => (k, v.map{
+        e => e.subsetOf(current_draw)
+      })
+    }.filter(x => x._2.contains(true)).keys.toSet
+
+    val AlreadyWonTables = winnerQ.values.foldLeft(Set.empty[Int])(_|_)
+
+    val NewWinners = MatchingAxes -- AlreadyWonTables
+    val CurrentWinners = NewWinners.isEmpty match {
+      case true => winnerQ
+      case false => winnerQ + (last_number_index -> NewWinners)
+      }
+
+    GetLoserBoard(draws, BingoTables, CurrentWinners,  last_number_index+1)
+  }
 
 }
