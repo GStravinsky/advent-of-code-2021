@@ -1,7 +1,7 @@
 object Day5 {
 
   def main(args: Array[String]): Unit = {
-    println(numStraigthOverlappingVents("input_big.txt"))
+    println(numStraightOverlappingVents("input_big.txt"))
 
   }
 
@@ -14,7 +14,7 @@ object Day5 {
     lines
   }
 
-  def numStraigthOverlappingVents(filePath: String): Int = {
+  def numStraightOverlappingVents(filePath: String): Int = {
     val data = loadData(filePath)
 
     val out = data.filter(e => ParsedCoordinates(e).notDiagonal).map(e => ParsedCoordinates(e).get).flatten
