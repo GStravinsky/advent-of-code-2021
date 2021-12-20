@@ -1,9 +1,7 @@
 object Day5 {
 
   def main(args: Array[String]): Unit = {
-    val data = loadData("input_smol.txt")
-
-    println(ParsedCoordinates(data(2)).get)
+    println(numStraigthOverlappingVents("input_big.txt"))
 
   }
 
@@ -14,6 +12,15 @@ object Day5 {
     bufferedSource.close
 
     lines
+  }
+
+  def numStraigthOverlappingVents(filePath: String): Int = {
+    val data = loadData(filePath)
+
+    val out = data.filter(e => ParsedCoordinates(e).notDiagonal).map(e => ParsedCoordinates(e).get).flatten
+      .groupBy(identity).filter((t) => t._2.size>1).size
+
+    out
   }
 
 }
@@ -28,7 +35,7 @@ trait Coordinates {
   def get: List[(Int,Int)] = (x1,x2,y1,y2) match {
     case x if x1 == x2 =>{
       val order = Seq(y1,y2).sorted
-      Range(order.head,order.last).inclusive.map(e => (e,x2)).toList
+      Range(order.head,order.last).inclusive.map(e => (x2,e)).toList
     }
     case y if y1 == y2 => {
       val order = List(x1,x2).sorted
