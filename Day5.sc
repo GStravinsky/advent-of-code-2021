@@ -2,6 +2,7 @@ object Day5 {
 
   def main(args: Array[String]): Unit = {
     println(numStraightOverlappingVents("input_big.txt"))
+    println(numStraightDiagonalOverlappingVents("input_big.txt"))
 
   }
 
@@ -18,6 +19,15 @@ object Day5 {
     val data = loadData(filePath)
 
     val out = data.filter(e => ParsedCoordinates(e).notDiagonal).map(e => ParsedCoordinates(e).get).flatten
+      .groupBy(identity).filter((t) => t._2.size>1).size
+
+    out
+  }
+
+  def numStraightDiagonalOverlappingVents(filePath: String): Int = {
+    val data = loadData(filePath)
+
+    val out = data.map(e => ParsedCoordinates(e).get).flatten
       .groupBy(identity).filter((t) => t._2.size>1).size
 
     out
@@ -40,7 +50,16 @@ trait Coordinates {
     case y if y1 == y2 => {
       val order = List(x1,x2).sorted
       Range(order.head,order.last).inclusive.map(e => (e,y2)).toList
-    }}
+    }
+    // lets data dif_x dif_y and if positive/negative +- 1 up to the absolute number and zip
+    case z if !notDiagonal =>{
+      val xDiff = x2-x1
+      val yDiff = y2-y1
+      val xRange = Range(x1, x2, xDiff/xDiff.abs).inclusive
+      val yRange = Range(y1, y2, yDiff/yDiff.abs).inclusive
+      xRange.zip(yRange).toList
+    }
+  }
   }
 
 case class ParsedCoordinates(inputLine: List[String]) extends Coordinates {
