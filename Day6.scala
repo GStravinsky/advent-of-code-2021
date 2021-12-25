@@ -88,10 +88,3 @@ case class FishTime(daysToReproduction: Int) extends Fish {
     }
 }
 
-
-/*
-
-HashMap(0 -> 3, 1 -> 3, 2 -> 2, 3 -> 2, 4 -> 2, 5 -> 1, 6 -> 5, 7 -> 1, 8 -> 4)
-HashMap(0 -> 3, 5 -> 1, 1 -> 5, 6 -> 5, 2 -> 3, 7 -> 1, 3 -> 2, 8 -> 4, 4 -> 2)
-*/
-
