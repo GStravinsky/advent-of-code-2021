@@ -2,7 +2,7 @@
 object Day8 {
 
   def main(args: Array[String]): Unit = {
-    val data = loadData("input_smol.txt")
+    val data = loadData("input_big.txt")
     println(calculateSumOfOutput(data))
 
 
@@ -21,7 +21,7 @@ object Day8 {
     count
   }
 
-  def constructValueMap(digits: DigitDisplay): Map[String, Int] = {
+  def constructValueMap(digits: DigitDisplay): Map[Set[Char], Int] = {
 
     val easyMap = digits.identifyOneFourSeven
 
@@ -41,21 +41,24 @@ object Day8 {
       }).toMap
 
 
-    twoThreeFiveMap ++ zeroNineSixMap ++ easyMap.map(_.swap)
+    val joinedMap = twoThreeFiveMap ++ zeroNineSixMap ++ easyMap.map(_.swap)
+
+    joinedMap.map{case (k,v) => (k.toSet, v)}
   }
 
   def calculateSumOfOutput(allDigits: List[DigitDisplay], currentSlice: Int = 0, sum: Int = 0): Int = {
 
-    val digits = allDigits(currentSlice)
-    if (currentSlice == allDigits.size-1) {
+    if (currentSlice == allDigits.size) {
       return sum
     }
 
+    val digits = allDigits(currentSlice)
+
     val valueMap = constructValueMap(digits)
 
-    val realOutput = digits.output.map(e => valueMap(e)).mkString("").toInt
+    val realOutput = digits.output.map(e => valueMap(e.toSet)).mkString("").toInt
 
-    calculateSumOfOutput(allDigits = allDigits, currentSlice = currentSlice+1, sum = sum + 1)
+    calculateSumOfOutput(allDigits = allDigits, currentSlice = currentSlice+1, sum = sum + realOutput)
 
 
   }
@@ -73,6 +76,8 @@ trait DigitDisplay {
     case 7 => 8
   }
 
+
+  // perhaps make it store other premutations of the same number?
   def identifyOneFourSeven = joined.filter(
     e => {e.size == 2 | e.size == 4 | e.size == 7 | e.size == 3} )
     .map(e => easyNumberIdentifier(e.size) -> e).toMap
