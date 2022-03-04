@@ -1,5 +1,5 @@
 
-object Day8 {
+object Day9 {
 
   def main(args: Array[String]): Unit = {
     val data = LavaCave(loadData("input_big.txt"))
