@@ -43,19 +43,24 @@ case class Dealer(){
   }
 
   def flop(deck: Deck): (Deck, Table) = {
-    (discardCard(deck,3), Table(cards = Some(deck.cards.take(3))))
+    val deckMinusOne = discardCard(deck,1)
+    (discardCard(deckMinusOne,3), Table(cards = Some(deckMinusOne.cards.take(3))))
   }
 
   def turn(deck: Deck, table: Table): (Deck, Table) = {
+    val deckMinusOne = discardCard(deck,1)
+
     table.cards.getOrElse(Seq.empty).length match {
-      case 3 => (discardCard(deck,1), Table(cards = Some(table.cards.get ++ deck.cards.take(1))))
+      case 3 => (discardCard(deckMinusOne,1), Table(cards = Some(table.cards.get ++ deckMinusOne.cards.take(1))))
       case _ => throw new Exception(s"Turn must be called when table has 3 hard, not ${table.cards.get.length}")
     }
   }
 
   def river(deck: Deck, table: Table): (Deck, Table) = {
+    val deckMinusOne = discardCard(deck,1)
+
     table.cards.getOrElse(Seq.empty).length match {
-      case 4 => (discardCard(deck,1), Table(cards = Some(table.cards.get ++ deck.cards.take(1))))
+      case 4 => (discardCard(deckMinusOne,1), Table(cards = Some(table.cards.get ++ deckMinusOne.cards.take(1))))
       case _ => throw new Exception(s"River must be called when table has 4 hard, not ${table.cards.get.length}")
     }
   }
