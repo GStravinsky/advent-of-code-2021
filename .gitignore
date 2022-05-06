@@ -5,3 +5,7 @@
 .bsp
 project
 target
+.bloop
+.vscode
+.metals
+project/target

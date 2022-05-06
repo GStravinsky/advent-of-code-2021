@@ -2,7 +2,9 @@ package texasholdem
 
 import scala.util.Random
 
-trait Card{val symbol: Int}
+trait Card{
+  val symbol: Int
+}
 case class Spades(symbol: Int) extends Card
 case class Diamonds(symbol: Int) extends Card
 case class Clubs(symbol: Int) extends Card

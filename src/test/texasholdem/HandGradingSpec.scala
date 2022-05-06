@@ -22,12 +22,31 @@ class HandGradingSpec extends AnyFlatSpecLike  with Matchers {
     Diamonds(10), Spades(10), Hearts(10), Spades(8), Diamonds(12)
   )
 
+  val straightFlushTest = Seq(Diamonds(4), Diamonds(5), Diamonds(6), Diamonds(7), Diamonds(8))
+
+
   it should "deduce hand types correctly" in {
     whatTypeOfHand(royalFLushTest) shouldBe RoyalFlush()
     whatTypeOfHand(highestCardTest) shouldBe HighestCard()
     whatTypeOfHand(fullHouseTest) shouldBe FullHouse()
     whatTypeOfHand(pairTest) shouldBe Pair()
     whatTypeOfHand(threeOfAKindTes) shouldBe ThreeOfAKind()
+    whatTypeOfHand(straightFlushTest) shouldBe StraightFlush()
   }
 
+  it should "know which hand is better when hands are of different types" in {
+    chooseWinner(royalFLushTest, highestCardTest) shouldBe (royalFLushTest, RoyalFlush())
+    chooseWinner(pairTest, fullHouseTest) shouldBe (fullHouseTest, FullHouse())
+  }
+
+  it should "decide the best hand from kicker in two one draw hand cases" in {
+    val straightFlushWorse = Seq(Diamonds(2), Diamonds(3), Diamonds(4), Diamonds(5), Diamonds(6))
+    chooseWinner(straightFlushWorse, straightFlushTest) shouldBe (straightFlushTest, StraightFlush())
+  }
+
+  it should "decide the best hand from the second draw in two two draw cases"
+
+  it should "decide the best hand from a kicker in two two draw cases with equal second draw"
+
+  it should "decide the best hand from 5 card kicker in Highest card case"
 }

@@ -1,3 +1,4 @@
+package essentialscala
 object Options {
 
   def addOptions(optionA: Option[Int], optionB: Option[Int], optionC: Option[Int]): Option[Int] = {
@@ -10,10 +11,10 @@ object Options {
   }
 
   def addOptionsMap(optionA: Option[Int], optionB: Option[Int], optionC: Option[Int]): Option[Int] = {
-    optionA.flatMap(e => optionB.map(b => optionC.map(c => e+b+c)))
+    optionA.flatMap(e => optionB.flatMap(b => optionC.map(c => e+b+c)))
   }
   def main(args: Array[String]): Unit = {
-    println(addOptions(None, Some(10). Some(2)))
+    println(addOptions(None, Some(10), Some(2)))
     println(addOptionsMap(Some(1), Some(10), Some(2)))
   }
 
