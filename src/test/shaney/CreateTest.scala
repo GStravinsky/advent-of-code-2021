@@ -2,7 +2,7 @@ package shaney
 
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
-import shaney.Create.{ chooseNextWordBasedOnOneWord, getAllPossibleNextWordsWithProbabilities}
+import shaney.Create.{chooseNextWord, getAllPossibleNextWordsWithProbabilities, getCDF}
 
 class CreateTest extends AnyFlatSpecLike  with Matchers {
 
@@ -16,8 +16,25 @@ class CreateTest extends AnyFlatSpecLike  with Matchers {
 
   behavior of "Create"
 
+  it should "create CDF" in {
+    val input = Seq(
+      Distribution("a", 0.1),
+      Distribution("b", 0.2),
+      Distribution("c", 0.5),
+      Distribution("d", 0.2)
+    )
+    val expected = Seq(
+      Distribution("a", 0.1),
+      Distribution("b", 0.3),
+      Distribution("c", 0.8),
+      Distribution("d", 1.0)
+    )
+
+    getCDF(input) shouldBe expected
+  }
+
   it should "choose the correct next word" in {
-    chooseNextWordBasedOnOneWord("of", testTrainingSet.toArray) should (be ("an") or be ("a"))
+    chooseNextWord("of", testTrainingSet.toArray) should (be ("an") or be ("a"))
   }
   it should "getAllPossibleNextWordsWithProbabilities" in {
 

@@ -1,14 +1,9 @@
 package shaney
 
-import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.Dataset
 import shaney.Training.getAsArray
-import shaney.Triple
-import sun.font.TextLabel
-
 import scala.annotation.tailrec
-import scala.util.Random
 
+case class Distribution(value: String, pdf: Double)
 
 object Create {
 
@@ -18,7 +13,7 @@ object Create {
     val cText = "/Users/stravinskaiteg/Documents/Personal_stuff/advent-of-code-2021/src/main/resources/texts/Corpo.txt"
 
     val data = getAsArray(nText, cText)
-    val text = createMagicText("RELX", dataset = data, textLength = 100)
+    val text = createMagicText("RELX", "does", dataset = data, textLength = 100)
 
     println(text)
   }
@@ -29,45 +24,33 @@ object Create {
     textLength match {
       case 0 => text.mkString(" ")
       case _ => {
-        val newWord = chooseNextWordBasedOnOneWord(initialWord, dataset)
+        val newWord = chooseNextWord(initialWord, dataset)
         val newText = text :+ newWord
         createMagicText(newWord, dataset, textLength - 1)(newText)
       }
     }
   }
 
-  def chooseNextWordBasedOnOneWord(wordOne: String, dataset: Array[Triple]): String = {
+  def chooseNextWord(wordOne: String, dataset: Array[Triple]): String = {
     val possibleWords = getAllPossibleNextWordsWithProbabilities(wordOne, dataset)
 
     val p = scala.util.Random.nextDouble
 
-    //val cdf = possibleWords.values.head +: possibleWords.values.sliding(2).map(_.sum).toList
+    val cdf = getCDF(possibleWords)
 
-   //val t = possibleWords.sliding(2).map(e => e.values.sum -> e.keys.tail.head).toList
+    cdf.filter(e => e.pdf >= p).head.value
 
-    val it = possibleWords.iterator
-    var accum = 0.0
-    while (it.hasNext) {
-      val (item, itemProb) = it.next
-      accum += itemProb
-      if (accum >= p)
-        return item  // return so that we don't have to search through the whole distribution
     }
-    sys.error(f"this should never happen")  // needed so it will compile
+
+  def getCDF(words: Seq[Distribution]) ={
+
+    val cdf = words.map(e => e.pdf).scanLeft(0.0)(_+_).tail
+
+    (words zip cdf)
+      .map{case (a,b) => Distribution(a.value, b)}
   }
-//    val highestProbability= possibleWords.values.max
-//
-//    val highestProbabilityWords = po
-    //   ssibleWords.filter(e => e._2 == highestProbability).keys
-//
-//    highestProbabilityWords.size match {
-//      case 1 => highestProbabilityWords.head
-//      case _ => chooseFromEqualProbability(highestProbabilityWords.toSeq, Random.nextInt(highestProbabilityWords.size))
-//    }
 
-
-
-  def getAllPossibleNextWordsWithProbabilities(wordOne: String, dataset: Array[Triple]) : Map[String, Double] = {
+  def getAllPossibleNextWordsWithProbabilities(wordOne: String, dataset: Array[Triple]) : Seq[Distribution] = {
     // We store duplicate pairs, so getting probabilities will be counting on the number of duplicates if any
     val relevantData = dataset.filter(e => e.wordOne == wordOne)
 
@@ -76,7 +59,8 @@ object Create {
     relevantData
       .map(e => e.wordTwo)
       .groupBy(identity)
-      .map(e => e._1 -> e._2.size.toDouble/denominator)
+      .map(e =>Distribution(e._1, e._2.size.toDouble/denominator))
+      .toList
   }
 
 }
