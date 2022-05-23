@@ -13,7 +13,7 @@ object Create {
     val cText = "/Users/stravinskaiteg/Documents/Personal_stuff/advent-of-code-2021/src/main/resources/texts/Corpo.txt"
 
     val data = getAsArray(nText, cText)
-    val text = createMagicText("RELX", "does", dataset = data, textLength = 100)
+    val text = createMagicText("RELX", dataset = data, textLength = 100)
 
     println(text)
   }
