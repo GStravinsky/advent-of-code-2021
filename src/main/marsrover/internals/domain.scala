@@ -1,7 +1,5 @@
 package main.marsrover.internals
 
-import main.marsrover.internals.domain.{Coordinates, Row}
-
 
 package object domain {
   type Row = Vector[Coordinates]
@@ -11,9 +9,11 @@ package object domain {
                           y: Int
                         )
 
-  case class DisplayInput(
-                           grid: Grid
-                         )
+  trait Display {
+    def getInput: Array[String]
+    def parseInput(input: Array[String]): Coordinates
+    def inputIsValid(input: Array[String]): Boolean
+  }
 }
 
 

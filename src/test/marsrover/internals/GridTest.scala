@@ -1,11 +1,10 @@
 package marsrover.internals
 
-import main.marsrover.internals.Grid
 import main.marsrover.internals.domain.Coordinates
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 
-class Grid extends AnyFlatSpecLike  with Matchers {
+class GridTest extends AnyFlatSpecLike  with Matchers {
 
   behavior of "Grid"
 
