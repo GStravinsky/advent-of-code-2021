@@ -18,7 +18,7 @@ package object domain {
   }
   trait Display {
     def getInput: Array[String]
-    def parseInput(input: Array[String]): Coordinates
+   // def parseInput(input: Array[String]): Coordinates
     def inputIsValid(input: Array[String]): Boolean
   }
 
@@ -33,6 +33,10 @@ package object domain {
   case object East extends Direction
   case object West extends Direction
 
+  trait Instructions
+  case object RotateToLeft extends Instructions
+  case object RotateToRight extends Instructions
+  case object Move extends Instructions
 }
 
 

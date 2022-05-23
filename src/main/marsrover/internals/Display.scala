@@ -1,6 +1,7 @@
 package marsrover.internals
 
-import marsrover.internals.domain.{Coordinates, Display, East, GridCoordinates, North, RoverCoordinates, South, West}
+import marsrover.internals.domain.{Coordinates, Display, East, GridCoordinates, Instructions, Move, North, RotateToLeft, RotateToRight, RoverCoordinates, South, West}
+import shapeless.ops.hlist.{RotateLeft, RotateRight}
 
 class DisplayGrid extends Display{
 
@@ -21,7 +22,7 @@ class DisplayGrid extends Display{
     }
   }
 
-  override def parseInput(input: Array[String]): GridCoordinates = {
+  def parseInput(input: Array[String]): GridCoordinates = {
     GridCoordinates(input.head.toInt, input.tail.head.toInt )
   }
 
@@ -50,15 +51,14 @@ class DisplayGrid extends Display{
 
 class DisplayRover extends Display {
 
-  def parseInputAndShowRover(input: Array[String], grid: Grid) = {
-    val parsedCoords = parseInput(input)
+  def showRover(roverCoordinates: RoverCoordinates, grid: Grid) = {
     val gridSceleton = grid.generate().reverse
     val roverMap =
       gridSceleton
         .map(column => column
           .map(e =>
             e match {
-              case parsedCoords.gridCoordinates => "|X"
+              case roverCoordinates.gridCoordinates => "|X"
               case _ => "|."
             }
           ))
@@ -97,5 +97,33 @@ class DisplayRover extends Display {
        case _ => false
      }
 
+  }
+}
+
+class DisplayRoverInstructions extends Display {
+  override def getInput: Array[String] = {
+    println("Insert rover instructions")
+    val input = scala.io.StdIn.readLine()
+    inputIsValid(input.split("")) match {
+      case true => input.split("")
+      case false => {
+        println("The input has to contain only L,M,R")
+        getInput
+      }
+    }
+
+  }
+
+   def parseInput(input: Array[String]): Array[Instructions] = {
+
+    input.map(e => e match {
+      case "L" => RotateToLeft
+      case "R" => RotateToRight
+      case "M" => Move
+    })
+  }
+
+  override def inputIsValid(input: Array[String]): Boolean = {
+    input.toSet.subsetOf(Set("L", "R", "M"))
   }
 }

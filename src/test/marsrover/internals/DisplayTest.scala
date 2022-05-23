@@ -1,6 +1,6 @@
 package marsrover.internals
 
-import marsrover.internals.domain.{GridCoordinates, Display}
+import marsrover.internals.domain.{Display, GridCoordinates, North, RoverCoordinates}
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 
@@ -24,9 +24,9 @@ class DisplayTest extends AnyFlatSpecLike  with Matchers {
     val gridTest = Grid(coordTest)
 
     val disp = new DisplayRover
-    val input = Array("1","2","N")
+    val input = RoverCoordinates(1,2,North)
 
-    disp.parseInputAndShowRover(input, gridTest)
+    disp.showRover(input, gridTest)
   }
 
 }
